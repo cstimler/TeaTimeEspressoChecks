@@ -19,6 +19,7 @@ package com.example.android.teatime;
 import android.app.Activity;
 import android.app.Instrumentation;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.espresso.intent.rule.IntentsTestRule;
 import android.support.test.runner.AndroidJUnit4;
@@ -28,16 +29,27 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import static android.support.test.espresso.action.ViewActions.click;
+import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.intent.Intents.intending;
+import static android.support.test.espresso.intent.Intents.intended;
 import static android.support.test.espresso.intent.matcher.IntentMatchers.isInternal;
-import static java.util.concurrent.CompletableFuture.allOf;
-import static org.hamcrest.core.IsNot.not;
+import static android.support.test.espresso.intent.matcher.IntentMatchers.hasAction;
+import static android.support.test.espresso.intent.matcher.IntentMatchers.hasExtra;
+import static android.support.test.espresso.intent.matcher.IntentMatchers.toPackage;
+
+import static android.support.test.espresso.matcher.ViewMatchers.withId;
+import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.core.AllOf.allOf;
+
 
 // TODO (1) Add annotation to specify AndroidJUnitRunner class as the default test runner
 @RunWith(AndroidJUnit4.class)
 public class OrderSummaryActivityTest {
 
-    private static final String PACKAGE_NAME = "com.android.email";
+    private static final String PACKAGE_NAME = "com.google.android";
+    private static final String MY_EMAIL = "I just ordered a delicious tea from TeaTime. Next time you are craving a tea, check them out!";
+
 
     // TODO (2) Add the rule that indicates we want to use Espresso-Intents APIs in functional UI tests
     @Rule
@@ -59,7 +71,8 @@ public class OrderSummaryActivityTest {
     public void clickSendEmailButton_SendsEmail() {
 
         onView(withId(R.id.send_email_button)).perform(click());
-        intended(allOf(hasAction(Intent.ACTION_SEND),
+        intended(allOf(hasAction(Intent.ACTION_SENDTO),
+                hasExtra(Intent.EXTRA_TEXT, MY_EMAIL),
                 toPackage(PACKAGE_NAME)));
     }
 }
